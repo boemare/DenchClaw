@@ -356,7 +356,11 @@ export function subscribeToRun(
  * Reactivate a completed subscribe-only run for a follow-up message.
  * Resets status to "running" and restarts the subscribe stream.
  */
-export function reactivateSubscribeRun(sessionKey: string, message?: string): boolean {
+export function reactivateSubscribeRun(
+	sessionKey: string,
+	message?: string,
+	attachments?: Array<{ mediaType: string; data: string }>,
+): boolean {
 	const run = activeRuns.get(sessionKey);
 	if (!run?.isSubscribeOnly) {return false;}
 	if (run.status === "running") {return true;}
@@ -378,7 +382,7 @@ export function reactivateSubscribeRun(sessionKey: string, message?: string): bo
 	// RPC streams ALL events (including tool events) on the same connection.
 	// In passive subscribe mode, tool events are not broadcast by the gateway.
 	const newChild = message
-		? spawnAgentStartForSession(message, sessionKey)
+		? spawnAgentStartForSession(message, sessionKey, attachments)
 		: spawnAgentSubscribeProcess(sessionKey, run.lastGlobalSeq);
 	run._subscribeProcess = newChild;
 	run.childProcess = newChild;
@@ -551,8 +555,10 @@ export function startRun(params: {
 	agentSessionId?: string;
 	/** Use a specific agent ID instead of the workspace default. */
 	overrideAgentId?: string;
+	/** Image attachments to forward to the gateway for vision models. */
+	attachments?: Array<{ mediaType: string; data: string }>;
 }): ActiveRun {
-	const { sessionId, message, agentSessionId, overrideAgentId } = params;
+	const { sessionId, message, agentSessionId, overrideAgentId, attachments } = params;
 
 	const existing = activeRuns.get(sessionId);
 	if (existing?.status === "running") {
@@ -566,7 +572,7 @@ export function startRun(params: {
 		? `agent:${agentId}:web:${agentSessionId}`
 		: undefined;
 	const abortController = new AbortController();
-	const child = spawnAgentProcess(message, agentSessionId, overrideAgentId);
+	const child = spawnAgentProcess(message, agentSessionId, overrideAgentId, attachments);
 
 	const run: ActiveRun = {
 		sessionId,
