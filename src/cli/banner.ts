@@ -33,19 +33,17 @@ const DENCHCLAW_ASCII = [
 ];
 
 // ---------------------------------------------------------------------------
-// Iron-metallic gradient colors (dark iron → bright silver → dark iron)
+// steven.com gradient colors (red → white → red)
 // ---------------------------------------------------------------------------
 const IRON_GRADIENT_COLORS = [
-  "#374151", // dark iron
-  "#4B5563",
-  "#6B7280", // medium iron
-  "#9CA3AF", // steel
-  "#D1D5DB", // bright silver
-  "#F3F4F6", // near-white highlight
-  "#D1D5DB",
-  "#9CA3AF",
-  "#6B7280",
-  "#4B5563",
+  "#ff5541", // steven.com red
+  "#ff7a6a",
+  "#ffaa9e",
+  "#ffffff", // white highlight
+  "#ffaa9e",
+  "#ff7a6a",
+  "#ff5541",
+  "#e64a38",
 ];
 
 // ---------------------------------------------------------------------------

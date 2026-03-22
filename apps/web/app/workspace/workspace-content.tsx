@@ -4053,7 +4053,7 @@ function DirectoryListing({
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1
-        className="font-instrument text-3xl tracking-tight mb-1 capitalize"
+        className="font-field-gothic text-3xl tracking-tight mb-1 capitalize"
         style={{ color: "var(--color-text)" }}
       >
         {node.name}
@@ -4164,7 +4164,7 @@ function WelcomeView({
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1
-        className="font-instrument text-3xl tracking-tight mb-2"
+        className="font-field-gothic text-3xl tracking-tight mb-2"
         style={{ color: "var(--color-text)" }}
       >
         Workspace

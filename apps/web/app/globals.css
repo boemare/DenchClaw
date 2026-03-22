@@ -4,12 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Override Tailwind's default sans font stack with steven.com fonts */
+@theme {
+  --font-sans: "Host Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 /* ============================================================
    Theme System — Light (default) & Dark (.dark)
    ============================================================ */
 
 :root {
-  /* Background / Surface */
+  /* Background / Surface — steven.com light mode */
   --color-bg: #f5f5f4;
   --color-surface: #ffffff;
   --color-sidebar-bg: #ebebea;
@@ -22,29 +27,34 @@
   --color-border-strong: rgba(0, 0, 0, 0.14);
 
   /* Text */
-  --color-text: #1c1c1a;
+  --color-text: #121212;
   --color-text-secondary: #44443e;
   --color-text-muted: #8a8a82;
 
-  /* Accent */
-  --color-accent: #0065A2;
-  --color-accent-hover: #004F80;
-  --color-accent-light: rgba(0, 101, 162, 0.08);
+  /* Accent — steven.com red (Creator Media) */
+  --color-accent: #ff5541;
+  --color-accent-hover: #e64a38;
+  --color-accent-light: rgba(255, 85, 65, 0.08);
+
+  /* steven.com brand colors */
+  --color-brand-red: #ff5541;
+  --color-brand-green: #51b75a;
+  --color-brand-blue: #5595ff;
+  --color-brand-yellow: #ffdd4b;
 
   /* Chat */
   --color-user-bubble: #eae8e4;
-  --color-user-bubble-text: #1c1c1a;
+  --color-user-bubble-text: #121212;
   --color-chat-input-bg: rgba(255, 255, 255, 0.8);
-  /* Chat sidebar (right) — stone-style selected/active, light theme */
   --color-chat-sidebar-active-bg: #f5f5f4;
   --color-chat-sidebar-active-text: #44403c;
   --color-chat-sidebar-muted: #57534e;
 
-  /* Semantic */
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
-  --color-info: #2563eb;
+  /* Semantic — steven.com palette */
+  --color-success: #52d36a;
+  --color-warning: #ffdd4b;
+  --color-error: #ff5541;
+  --color-info: #5595ff;
 
   /* Glassmorphism */
   --color-glass: rgba(255, 255, 255, 0.72);
@@ -52,22 +62,22 @@
   --color-bg-glass: rgba(250, 250, 249, 0.8);
 
   /* Object type chips */
-  --color-chip-object: rgba(37, 99, 235, 0.08);
-  --color-chip-object-text: #2563eb;
-  --color-chip-document: rgba(96, 165, 250, 0.08);
-  --color-chip-document-text: #3b82f6;
-  --color-chip-database: rgba(147, 51, 234, 0.08);
-  --color-chip-database-text: #9333ea;
-  --color-chip-report: rgba(22, 163, 74, 0.08);
-  --color-chip-report-text: #16a34a;
+  --color-chip-object: rgba(85, 149, 255, 0.08);
+  --color-chip-object-text: #5595ff;
+  --color-chip-document: rgba(85, 149, 255, 0.08);
+  --color-chip-document-text: #5595ff;
+  --color-chip-database: rgba(255, 85, 65, 0.08);
+  --color-chip-database-text: #ff5541;
+  --color-chip-report: rgba(81, 183, 90, 0.08);
+  --color-chip-report-text: #51b75a;
 
   /* Diff viewer */
-  --diff-add-bg: rgba(22, 163, 74, 0.09);
+  --diff-add-bg: rgba(81, 183, 90, 0.09);
   --diff-add-text: #166534;
-  --diff-add-badge: #16a34a;
-  --diff-del-bg: rgba(220, 38, 38, 0.07);
+  --diff-add-badge: #51b75a;
+  --diff-del-bg: rgba(255, 85, 65, 0.07);
   --diff-del-text: #991b1b;
-  --diff-del-badge: #dc2626;
+  --diff-del-badge: #ff5541;
 
   /* Shadow */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -75,7 +85,7 @@
   --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.1);
 
-  /* Dench UI tokens (used by @denchhq/ui-react primitives) */
+  /* UI tokens */
   --background: 0 0% 90%;
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
@@ -90,74 +100,73 @@
   --muted-foreground: 0 0% 45.1%;
   --accent: 0 0% 96.1%;
   --accent-foreground: 0 0% 9%;
-  --destructive: 0 84.2% 60.2%;
+  --destructive: 7 100% 63%;
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
+  --ring: 7 100% 63%;
   --radius: 0.5rem;
 }
 
 .dark {
-  /* Background / Surface */
-  --color-bg: #0c0c0b;
-  --color-surface: #161615;
-  --color-sidebar-bg: #0c0c0b;
-  --color-main-bg: #161615;
-  --color-surface-hover: #1e1e1c;
-  --color-surface-raised: #1a1a18;
+  /* Background / Surface — steven.com dark mode (#121212 base) */
+  --color-bg: #121212;
+  --color-surface: #1a1a1a;
+  --color-sidebar-bg: #121212;
+  --color-main-bg: #1a1a1a;
+  --color-surface-hover: #222222;
+  --color-surface-raised: #1e1e1e;
 
   /* Borders */
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-strong: rgba(255, 255, 255, 0.14);
 
   /* Text */
-  --color-text: #ececea;
+  --color-text: #ffffff;
   --color-text-secondary: #b8b8b0;
   --color-text-muted: #78776f;
 
-  /* Accent */
-  --color-accent: #0065A2;
-  --color-accent-hover: #3B9FD6;
-  --color-accent-light: rgba(0, 101, 162, 0.12);
+  /* Accent — steven.com red */
+  --color-accent: #ff5541;
+  --color-accent-hover: #ff7a6a;
+  --color-accent-light: rgba(255, 85, 65, 0.12);
 
   /* Chat */
-  --color-user-bubble: #1e1e1c;
-  --color-user-bubble-text: #ececea;
-  --color-chat-input-bg: #1e1e1c;
-  /* Chat sidebar (right) — stone-style selected/active, dark theme */
-  --color-chat-sidebar-active-bg: #1e1e1c;
-  --color-chat-sidebar-active-text: #ececea;
+  --color-user-bubble: #222222;
+  --color-user-bubble-text: #ffffff;
+  --color-chat-input-bg: #222222;
+  --color-chat-sidebar-active-bg: #222222;
+  --color-chat-sidebar-active-text: #ffffff;
   --color-chat-sidebar-muted: #78776f;
 
-  /* Semantic */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  /* Semantic — steven.com palette */
+  --color-success: #52d36a;
+  --color-warning: #ffdd4b;
+  --color-error: #ff5541;
+  --color-info: #5595ff;
 
   /* Glassmorphism */
-  --color-glass: rgba(22, 22, 21, 0.72);
+  --color-glass: rgba(18, 18, 18, 0.72);
   --color-glass-border: rgba(255, 255, 255, 0.06);
-  --color-bg-glass: rgba(22, 22, 21, 0.8);
+  --color-bg-glass: rgba(18, 18, 18, 0.8);
 
   /* Object type chips */
-  --color-chip-object: rgba(59, 130, 246, 0.12);
-  --color-chip-object-text: #60a5fa;
-  --color-chip-document: rgba(96, 165, 250, 0.12);
-  --color-chip-document-text: #93c5fd;
-  --color-chip-database: rgba(147, 51, 234, 0.12);
-  --color-chip-database-text: #c084fc;
-  --color-chip-report: rgba(34, 197, 94, 0.12);
-  --color-chip-report-text: #4ade80;
+  --color-chip-object: rgba(85, 149, 255, 0.12);
+  --color-chip-object-text: #5595ff;
+  --color-chip-document: rgba(85, 149, 255, 0.12);
+  --color-chip-document-text: #7db3ff;
+  --color-chip-database: rgba(255, 85, 65, 0.12);
+  --color-chip-database-text: #ff7a6a;
+  --color-chip-report: rgba(81, 183, 90, 0.12);
+  --color-chip-report-text: #6de878;
 
   /* Diff viewer */
-  --diff-add-bg: rgba(34, 197, 94, 0.1);
-  --diff-add-text: #4ade80;
-  --diff-add-badge: #22c55e;
-  --diff-del-bg: rgba(239, 68, 68, 0.1);
-  --diff-del-text: #f87171;
-  --diff-del-badge: #ef4444;
+  --diff-add-bg: rgba(81, 183, 90, 0.1);
+  --diff-add-text: #6de878;
+  --diff-add-badge: #51b75a;
+  --diff-del-bg: rgba(255, 85, 65, 0.1);
+  --diff-del-text: #ff7a6a;
+  --diff-del-badge: #ff5541;
 
   /* Shadow */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -165,26 +174,26 @@
   --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.5);
 
-  /* Dench UI tokens (used by @denchhq/ui-react primitives) */
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
+  /* UI tokens — dark */
+  --background: 0 0% 7%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 7%;
+  --secondary: 0 0% 13%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 13%;
   --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  --accent: 0 0% 13%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 7 100% 63%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 13%;
+  --input: 0 0% 13%;
+  --ring: 7 100% 63%;
   --radius: 0.5rem;
 }
 
@@ -195,9 +204,19 @@ body.resizing iframe {
 }
 
 /* ============================================================
-   Fonts — Bookerly (local)
+   Fonts — steven.com branding
    ============================================================ */
 
+/* Field Gothic — Display / headlines (steven.com primary) */
+@font-face {
+  font-family: "Field Gothic";
+  src: url("/fonts/field-gothic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bookerly — Rich document text */
 @font-face {
   font-family: "Bookerly";
   src: url("/fonts/Bookerly-Regular.ttf") format("truetype");
@@ -238,6 +257,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family:
+    "Host Grotesk",
     "Inter",
     -apple-system,
     BlinkMacSystemFont,
@@ -245,13 +265,22 @@ body {
     Roboto,
     sans-serif;
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Font utilities */
-.font-instrument {
-  font-family: "Instrument Serif", serif;
+.font-instrument,
+.font-field-gothic {
+  font-family: "Field Gothic", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.font-field-gothic {
+  font-family: "Field Gothic", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .font-bookerly {
@@ -401,7 +430,7 @@ label {
 }
 
 .workspace-prose h1 {
-  font-family: "Instrument Serif", serif;
+  font-family: "Field Gothic", Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.02em;
   font-size: 2rem;
   font-weight: 400;
   border-bottom: 1px solid var(--color-border);
@@ -409,7 +438,7 @@ label {
 }
 
 .workspace-prose h2 {
-  font-family: "Instrument Serif", serif;
+  font-family: "Field Gothic", Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.02em;
   font-size: 1.5rem;
   font-weight: 400;
   border-bottom: 1px solid var(--color-border);

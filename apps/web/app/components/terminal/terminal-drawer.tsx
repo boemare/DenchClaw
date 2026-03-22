@@ -51,8 +51,8 @@ function loadHeight(): number {
 function terminalTheme(): ITheme {
   const isDark = document.documentElement.classList.contains("dark");
   const rootStyles = getComputedStyle(document.documentElement);
-  const background = rootStyles.getPropertyValue("--color-bg").trim() || (isDark ? "#0c0c0b" : "#f5f5f4");
-  const foreground = rootStyles.getPropertyValue("--color-text").trim() || (isDark ? "#ececea" : "#1c1c1a");
+  const background = rootStyles.getPropertyValue("--color-bg").trim() || (isDark ? "#121212" : "#f5f5f4");
+  const foreground = rootStyles.getPropertyValue("--color-text").trim() || (isDark ? "#ffffff" : "#121212");
 
   if (isDark) {
     return {

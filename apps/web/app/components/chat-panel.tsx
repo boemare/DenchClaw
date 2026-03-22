@@ -893,7 +893,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 		const [rawView, _setRawView] = useState(false);
 
 		// ── Hero state (new chat screen) ──
-		const greeting = "Hey, I'm Eve. What event are we planning?";
+		const greeting = "What event are we planning?";
 		const visiblePrompts = PROMPT_SUGGESTIONS.slice(0, 7);
 
 		const handlePromptClick = useCallback((promptId: string) => {
@@ -2163,7 +2163,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 								disabled={(editorEmpty && attachedFiles.length === 0) || loadingSession}
 								className={`${compact ? "w-6 h-6" : "w-7 h-7"} rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
 								style={{
-									background: !editorEmpty || attachedFiles.length > 0 ? "linear-gradient(to top, #0065A2, #0075AA)" : "var(--color-text-muted)",
+									background: !editorEmpty || attachedFiles.length > 0 ? "linear-gradient(to top, #ff5541, #ff7a6a)" : "var(--color-text-muted)",
 									color: !editorEmpty || attachedFiles.length > 0 ? "white" : "var(--color-bg)",
 								}}
 								title="Send message"
@@ -2428,7 +2428,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 							{/* Hero greeting */}
 							{greeting && (
 								<h1
-									className="text-3xl md:text-5xl font-light tracking-normal font-instrument mb-6 md:mb-10 text-center px-4"
+									className="text-3xl md:text-5xl font-normal tracking-wide font-field-gothic mb-6 md:mb-10 text-center px-4"
 									style={{ color: "var(--color-text)" }}
 								>
 									{greeting}
