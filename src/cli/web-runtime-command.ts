@@ -234,7 +234,7 @@ async function runOpenClawUpdateWithProgress(openclawCommand: string): Promise<v
   throw new Error(
     detail
       ? `OpenClaw update failed.\n${detail}`
-      : "OpenClaw update failed. Fix this before running `npx eve update` again.",
+      : "OpenClaw update failed. Fix this before running `npx eveevent update` again.",
   );
 }
 
@@ -620,7 +620,7 @@ export async function startWebRuntimeCommand(
     throw new Error(
       [
         `Managed web runtime is missing at ${runtimeServerPath}.`,
-        "Run `npx eve update` (or `npx eve`) to install/update the web runtime first.",
+        "Run `npx eveevent update` (or `npx eveevent`) to install/update the web runtime first.",
       ].join(" "),
     );
   }

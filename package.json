@@ -1,21 +1,20 @@
 {
-  "name": "denchclaw",
+  "name": "eveevent",
   "version": "0.1.2",
-  "description": "Fully Managed OpenClaw Framework for managing your CRM, Sales Automation and Outreach agents. The only local productivity tool you need.",
-  "keywords": [],
-  "homepage": "https://github.com/DenchHQ/DenchClaw#readme",
+  "description": "Eve — AI community event agent for DOAC. Venue sourcing, booking, and event management powered by Retell AI, Eventbrite, and AgentMail.",
+  "keywords": ["ai", "events", "community", "agent", "openclaw"],
+  "homepage": "https://github.com/boemare/DenchClaw#readme",
   "bugs": {
-    "url": "https://github.com/DenchHQ/DenchClaw/issues"
+    "url": "https://github.com/boemare/DenchClaw/issues"
   },
   "license": "MIT",
-  "author": "Kumar Abhirup <kumar@dench.com>, Dench.com <support@dench.com>",
+  "author": "boemare",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DenchHQ/DenchClaw.git"
+    "url": "git+https://github.com/boemare/DenchClaw.git"
   },
   "bin": {
-    "dench": "denchclaw.mjs",
-    "denchclaw": "denchclaw.mjs"
+    "eveevent": "denchclaw.mjs"
   },
   "files": [
     "apps/web/.next/standalone/",

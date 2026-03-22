@@ -5,7 +5,7 @@ import { isTelemetryEnabled } from "../../telemetry/telemetry.js";
 export function registerTelemetryCommand(program: Command) {
   const cmd = program
     .command("telemetry")
-    .description("Manage anonymous telemetry for DenchClaw");
+    .description("Manage anonymous telemetry for Eve");
 
   cmd
     .command("status")
@@ -35,7 +35,7 @@ export function registerTelemetryCommand(program: Command) {
     .action(() => {
       writeTelemetryConfig({ enabled: false });
       console.log("Telemetry has been disabled.");
-      console.log("You can re-enable it anytime with: npx denchclaw telemetry enable");
+      console.log("You can re-enable it anytime with: npx eveevent telemetry enable");
     });
 
   cmd
@@ -43,7 +43,7 @@ export function registerTelemetryCommand(program: Command) {
     .description("Enable anonymous telemetry")
     .action(() => {
       writeTelemetryConfig({ enabled: true });
-      console.log("Telemetry has been enabled. Thank you for helping improve DenchClaw!");
+      console.log("Telemetry has been enabled. Thank you for helping improve Eve!");
     });
 
   const privacyCmd = cmd
@@ -55,7 +55,7 @@ export function registerTelemetryCommand(program: Command) {
     .description("Enable privacy mode (redacts message content, default)")
     .action(() => {
       if (!isTelemetryEnabled()) {
-        console.log("Telemetry is currently disabled. Enable it first with: npx denchclaw telemetry enable");
+        console.log("Telemetry is currently disabled. Enable it first with: npx eveevent telemetry enable");
         return;
       }
       writeTelemetryConfig({ privacyMode: true });
@@ -67,11 +67,11 @@ export function registerTelemetryCommand(program: Command) {
     .description("Disable privacy mode (sends full message content)")
     .action(() => {
       if (!isTelemetryEnabled()) {
-        console.log("Telemetry is currently disabled. Enable it first with: npx denchclaw telemetry enable");
+        console.log("Telemetry is currently disabled. Enable it first with: npx eveevent telemetry enable");
         return;
       }
       writeTelemetryConfig({ privacyMode: false });
       console.log("Privacy mode disabled. Full message content and tool results will be captured.");
-      console.log("Re-enable anytime with: npx denchclaw telemetry privacy on");
+      console.log("Re-enable anytime with: npx eveevent telemetry privacy on");
     });
 }
