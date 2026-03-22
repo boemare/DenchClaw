@@ -1,0 +1,180 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "last_modification_timestamp": 0,
+  "agent_name": "Eve - Venue Booking",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 0,
+    "conversation_flow_id": ""
+  },
+  "language": "en-US",
+  "data_storage_setting": "everything",
+  "version": 0,
+  "is_published": false,
+  "voice_id": "retell-Cimo",
+  "max_call_duration_ms": 300000,
+  "interruption_sensitivity": 0.7,
+  "user_dtmf_options": {},
+  "conversationFlow": {
+    "conversation_flow_id": "",
+    "version": 0,
+    "global_prompt": "## Task Overview ##\n\nYou are Eve, a professional event coordinator calling back to confirm a venue booking. The team has approved this venue and you are ready to proceed. Be confident, decisive, and clear.\n\n## Response Guideline ##\n\nYou are here to BOOK, not to browse. Be decisive. If anything has changed (price, availability), do NOT commit — say you'll check with the team. Never provide payment card details on the phone — always route to email invoice. Keep the call under 4 minutes.",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "static_text",
+          "text": "Hi, this is Eve calling back about the {{event_type}} on {{event_date}}. Great news — we'd love to go ahead and book with you!"
+        },
+        "name": "Greeting",
+        "edges": [
+          {
+            "condition": "Venue responds",
+            "id": "edge-greeting-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Venue responds"
+            },
+            "destination_node_id": "node-confirm-date"
+          }
+        ],
+        "start_speaker": "agent",
+        "id": "start-node-1",
+        "type": "conversation",
+        "display_position": { "x": 500, "y": 500 }
+      },
+      {
+        "name": "Confirm Date & Price",
+        "edges": [
+          {
+            "condition": "Date and price confirmed as agreed",
+            "id": "edge-confirm-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Date and price confirmed as agreed"
+            },
+            "destination_node_id": "node-deposit"
+          },
+          {
+            "condition": "Price or date has changed",
+            "id": "edge-confirm-2",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Price or date has changed"
+            },
+            "destination_node_id": "node-changed"
+          }
+        ],
+        "id": "node-confirm-date",
+        "type": "conversation",
+        "display_position": { "x": 1000, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Confirm the booking: I'd like to confirm {{event_date}} for {{headcount}} guests. Just to confirm, the total is {{agreed_price}} as we discussed?"
+        }
+      },
+      {
+        "name": "Deposit & Payment",
+        "edges": [
+          {
+            "condition": "Deposit and payment info obtained",
+            "id": "edge-deposit-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Deposit and payment info obtained"
+            },
+            "destination_node_id": "node-timing"
+          }
+        ],
+        "id": "node-deposit",
+        "type": "conversation",
+        "display_position": { "x": 1500, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask: What do you need to secure the booking? Can you send a deposit invoice to {{email}}? If they ask for card details, say: We prefer to handle payment via invoice — please send it to {{email}} and we'll process it promptly."
+        }
+      },
+      {
+        "name": "Confirm Timing",
+        "edges": [
+          {
+            "condition": "Timing confirmed",
+            "id": "edge-timing-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Timing confirmed"
+            },
+            "destination_node_id": "node-final"
+          }
+        ],
+        "id": "node-timing",
+        "type": "conversation",
+        "display_position": { "x": 2000, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Confirm: We'd like to arrive at {{setup_time}} for setup. The event runs {{event_start}} to {{event_end}}. Does that still work? Also ask: Can I get a booking reference or confirmation number? And: Who should we contact on the day if we need anything?"
+        }
+      },
+      {
+        "name": "Final Wrap Up",
+        "edges": [
+          {
+            "condition": "Ready to end call",
+            "id": "edge-final-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Ready to end call"
+            },
+            "destination_node_id": "node-end"
+          }
+        ],
+        "id": "node-final",
+        "type": "conversation",
+        "display_position": { "x": 2500, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask: What do you need from us before the event? Any forms or paperwork? Please send everything to {{email}}. Confirm: And the cancellation policy is {{cancellation_policy}}, correct? Then end warmly: Thank you so much. We're really looking forward to it. You'll hear from us if we need anything else."
+        }
+      },
+      {
+        "name": "Terms Changed",
+        "edges": [
+          {
+            "condition": "Conversation ending",
+            "id": "edge-changed-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Conversation ending"
+            },
+            "destination_node_id": "node-end"
+          }
+        ],
+        "id": "node-changed",
+        "type": "conversation",
+        "display_position": { "x": 1500, "y": 800 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Say: I appreciate you letting me know about the change. Let me check with the team on that and I'll get back to you. What's the best way to reach you — email or phone? Thank them and end the call politely."
+        }
+      },
+      {
+        "name": "End Call",
+        "id": "node-end",
+        "type": "end",
+        "display_position": { "x": 3000, "y": 500 },
+        "instruction": { "type": "prompt", "text": "" }
+      }
+    ],
+    "start_node_id": "start-node-1",
+    "start_speaker": "agent",
+    "tools": [],
+    "model_choice": {
+      "type": "cascading",
+      "model": "gpt-4.1"
+    },
+    "knowledge_base_ids": [],
+    "mcps": [],
+    "begin_tag_display_position": { "x": 100, "y": 600 },
+    "is_published": false
+  }
+}

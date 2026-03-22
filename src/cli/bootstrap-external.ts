@@ -2352,13 +2352,22 @@ export async function bootstrapCommand(
       setEnv("RETELL_API_KEY", retellKey.trim());
     }
 
-    const retellAgent = await text({
-      message: stylePromptMessage("Retell Agent ID (create agent in dashboard first)"),
+    const retellDiscovery = await text({
+      message: stylePromptMessage("Retell Discovery Agent ID (Eve - Venue Discovery)"),
       placeholder: "skip",
-      initialValue: readExisting("RETELL_AGENT_ID") ?? "",
+      initialValue: readExisting("RETELL_DISCOVERY_AGENT_ID") ?? "",
     });
-    if (!isCancel(retellAgent) && typeof retellAgent === "string" && retellAgent.trim()) {
-      setEnv("RETELL_AGENT_ID", retellAgent.trim());
+    if (!isCancel(retellDiscovery) && typeof retellDiscovery === "string" && retellDiscovery.trim()) {
+      setEnv("RETELL_DISCOVERY_AGENT_ID", retellDiscovery.trim());
+    }
+
+    const retellBooking = await text({
+      message: stylePromptMessage("Retell Booking Agent ID (Eve - Venue Booking)"),
+      placeholder: "skip",
+      initialValue: readExisting("RETELL_BOOKING_AGENT_ID") ?? "",
+    });
+    if (!isCancel(retellBooking) && typeof retellBooking === "string" && retellBooking.trim()) {
+      setEnv("RETELL_BOOKING_AGENT_ID", retellBooking.trim());
     }
 
     const retellNumber = await text({

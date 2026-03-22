@@ -88,8 +88,8 @@ Use the following installed skills for each subtask. Always spawn subagents via 
 
 1. **Parse & Record** — Extract event params, create DuckDB entry, set Status = "Planning"
 2. **Venue Research** — Spawn browser subagent to find venue options in the target city. Look for capacity, pricing, availability, and reviews.
-3. **Venue Outreach** — Contact top venue candidates via email and/or phone to check availability and get quotes. Present top 3 options to the human with costs and trade-offs. **HUMAN GATE: Wait for venue approval before confirming any booking.**
-4. **Book Venue** — Once approved, confirm the booking via email or phone. Update DuckDB: Venue Status = "Confirmed", Location = confirmed venue.
+3. **Venue Discovery Calls** — For top venue candidates, use the **Discovery Agent** (`RETELL_DISCOVERY_AGENT_ID`) to call and check availability, pricing, capacity, catering, deposits, and logistics. Pass dynamic variables: `venue_name`, `event_date`, `headcount`, `event_type`, `organization`, `budget`. Also send discovery emails via AgentMail. Present top 3 options to the team with costs and trade-offs.
+4. **Book Venue** — Once the team approves a venue, use the **Booking Agent** (`RETELL_BOOKING_AGENT_ID`) to call and confirm the reservation. Pass dynamic variables: `venue_name`, `event_date`, `headcount`, `agreed_price`, `setup_time`, `event_start`, `event_end`, `email` (Eve's AgentMail), `cancellation_policy`, `contact_name`. Update DuckDB: Venue Status = "Confirmed", Location = confirmed venue.
 5. **Create Eventbrite Event** — Spawn eventbrite subagent to create the event page with venue details, date, capacity, and description. Update DuckDB with Eventbrite URL. Eventbrite handles all fan-facing invitations, waitlist, and reminders from here.
 6. **RSVP Tracking** — Periodically check RSVPs via eventbrite. Update RSVP Count in DuckDB. Report status to team when asked.
 7. **Day-of Coordination** — Update Status = "Day-of". Confirm final details with venue via email/phone if needed.

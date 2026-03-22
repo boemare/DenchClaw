@@ -12,17 +12,28 @@ Make AI-powered phone calls with automatic transcription, recording, and analyti
 
 Before Eve can make calls, a human must:
 1. Sign up at https://www.retellai.com and get an API key
-2. Create a **Voice Agent** in the Retell dashboard with a prompt like: "You are Eve, calling on behalf of DOAC to coordinate event venues. Be professional, friendly, and concise."
+2. Import **two agent templates** from the `skills/retell-ai/templates/` folder:
+   - `venue-discovery.json` — "Eve - Venue Discovery" agent for checking availability, pricing, and venue details
+   - `venue-booking.json` — "Eve - Venue Booking" agent for confirming and locking reservations
 3. Buy a **phone number** ($2/month for testing) in the dashboard under Telephony → Phone Numbers
-4. Bind the agent to the number for outbound calls
+4. Bind both agents to the number for outbound calls
 
-After setup, Eve needs: `RETELL_API_KEY`, `RETELL_AGENT_ID`, `RETELL_FROM_NUMBER`
+After setup, Eve needs: `RETELL_API_KEY`, `RETELL_DISCOVERY_AGENT_ID`, `RETELL_BOOKING_AGENT_ID`, `RETELL_FROM_NUMBER`
+
+## Two Call Flows
+
+### Discovery Call (Agent: Eve - Venue Discovery)
+Used for initial outreach. Gathers: availability, capacity, pricing, what's included, catering options, deposit, setup times, accessibility, parking, cancellation policy. Keeps call under 5 minutes.
+
+### Booking Call (Agent: Eve - Venue Booking)
+Used after team approves a venue. Confirms: date, price, deposit/invoice, timing, booking reference, next steps, day-of contact. Does NOT agree to price changes or date changes without team approval. Keeps call under 4 minutes.
 
 ## Environment Variables
 
 ```bash
 export RETELL_API_KEY="your_retell_api_key"
-export RETELL_AGENT_ID="agent_abc123"
+export RETELL_DISCOVERY_AGENT_ID="agent_discovery_123"
+export RETELL_BOOKING_AGENT_ID="agent_booking_456"
 export RETELL_FROM_NUMBER="+14157774444"
 ```
 
@@ -32,7 +43,9 @@ Free tier: $10 credits (~60-90 minutes of calls). No monthly commitment.
 
 All requests: `https://api.retellai.com/v2` with `Authorization: Bearer $RETELL_API_KEY`
 
-## Make a Call
+## Make a Discovery Call
+
+Use the discovery agent to check venue availability, pricing, and details.
 
 ```bash
 curl -X POST "https://api.retellai.com/v2/create-phone-call" \
@@ -41,14 +54,51 @@ curl -X POST "https://api.retellai.com/v2/create-phone-call" \
   -d '{
     "from_number": "'$RETELL_FROM_NUMBER'",
     "to_number": "+1VENUE_PHONE_E164",
-    "override_agent_id": "'$RETELL_AGENT_ID'",
+    "override_agent_id": "'$RETELL_DISCOVERY_AGENT_ID'",
     "retell_llm_dynamic_variables": {
       "venue_name": "The Venue NYC",
-      "event_name": "DOAC NYC Dinner",
-      "purpose": "Check availability for Friday March 28, party of 30, budget $2000",
-      "special_requests": "Private dining room preferred"
+      "event_date": "Friday March 28",
+      "headcount": "30 people",
+      "event_type": "community dinner",
+      "organization": "DOAC",
+      "budget": "$2,000"
     },
     "metadata": {
+      "call_type": "discovery",
+      "venue": "The Venue NYC",
+      "event": "NYC Dinner"
+    }
+  }'
+```
+
+## Make a Booking Call
+
+Use the booking agent AFTER team approval to lock the reservation.
+
+```bash
+curl -X POST "https://api.retellai.com/v2/create-phone-call" \
+  -H "Authorization: Bearer $RETELL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from_number": "'$RETELL_FROM_NUMBER'",
+    "to_number": "+1VENUE_PHONE_E164",
+    "override_agent_id": "'$RETELL_BOOKING_AGENT_ID'",
+    "retell_llm_dynamic_variables": {
+      "venue_name": "The Venue NYC",
+      "event_date": "Friday March 28",
+      "headcount": "30",
+      "event_type": "community dinner",
+      "organization": "DOAC",
+      "agreed_price": "$1,800",
+      "setup_time": "5:00 PM",
+      "event_start": "7:00 PM",
+      "event_end": "11:00 PM",
+      "email": "eve@agentmail.to",
+      "cancellation_policy": "Full refund up to 7 days before",
+      "contact_name": "Sarah"
+    },
+    "metadata": {
+      "call_type": "booking",
       "venue": "The Venue NYC",
       "event": "NYC Dinner"
     }
@@ -59,7 +109,7 @@ curl -X POST "https://api.retellai.com/v2/create-phone-call" \
 
 Response includes `call_id` — use to retrieve transcript after the call ends.
 
-The `retell_llm_dynamic_variables` are injected into the agent's prompt so it knows what to say. Use them to pass venue name, event details, and the purpose of the call.
+The `retell_llm_dynamic_variables` are injected into the agent's prompt so it knows the context. Always pass all relevant variables from the event and venue records.
 
 ## Get Call (Transcript + Recording + Analysis)
 

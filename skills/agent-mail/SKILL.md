@@ -98,15 +98,94 @@ Returns all messages in the thread. Each message has:
 - `timestamp` — when sent/received
 - `attachments` — list of attachment objects
 
-## Workflow for Venue Emails
+## Email Flow 1: Venue Discovery
 
-1. **Send initial email**: Use `messages/send` with venue contact email, subject, and body
-2. **Track thread**: Save the `thread_id` returned
-3. **Check for replies**: Periodically `GET /threads` or use webhooks
-4. **Read reply**: `GET /threads/{thread_id}` — use `extracted_text` for just the new reply
-5. **Reply back**: `POST /messages/{message_id}/reply` to continue the conversation
-6. **Save to workspace**: Store the thread as a JSONL chat session (see event-orchestration skill)
-7. **Log to DuckDB**: Create/update entry in `communications` object
+Send this when first reaching out to a venue to check availability and pricing.
+
+**Subject:** `Event inquiry — {{organization}} {{event_type}}, {{event_date}}`
+
+**Body template:**
+```
+Hi,
+
+My name is Eve and I'm reaching out on behalf of {{organization}}. We're planning a {{event_type}} for approximately {{headcount}} guests and are looking at venues in your area.
+
+We'd love to know:
+- Are you available on {{event_date}}?
+- What is the pricing for a group of {{headcount}}? (room hire, minimum spend, etc.)
+- Do you offer in-house catering, or can we arrange outside catering?
+- What's included in the hire? (tables, chairs, AV, staff)
+- What deposit is required to secure the booking?
+
+If {{event_date}} doesn't work, we're flexible on nearby dates.
+
+Would love to hear from you. Happy to jump on a quick call if that's easier.
+
+Best,
+Eve
+{{organization}}
+```
+
+## Email Flow 2: Venue Booking Confirmation
+
+Send this after the team approves a venue and you want to lock the reservation.
+
+**Subject:** `Booking confirmation — {{organization}} {{event_type}}, {{event_date}}`
+
+**Body template:**
+```
+Hi {{contact_name}},
+
+Thank you for the information from our earlier conversation. We'd like to go ahead and confirm the booking.
+
+Here are the details:
+- Date: {{event_date}}
+- Guests: {{headcount}}
+- Setup time: {{setup_time}}
+- Event: {{event_start}} — {{event_end}}
+- Agreed price: {{agreed_price}}
+
+Could you please:
+1. Send a deposit invoice to this email address
+2. Confirm the booking reference / confirmation number
+3. Share any forms or paperwork we need to complete before the event
+4. Let us know the cancellation policy and day-of contact person
+
+If anything needs a signature, please send it over and we'll return it promptly.
+
+Looking forward to the event!
+
+Best,
+Eve
+{{organization}}
+```
+
+## Email Flow 3: Follow-up
+
+Send if a venue hasn't replied within 48 hours of discovery or booking email.
+
+**Subject:** `Re: [original subject]` (use reply endpoint to keep thread)
+
+**Body template:**
+```
+Hi,
+
+Just following up on my earlier email about the {{event_type}} on {{event_date}} for {{headcount}} guests. Would love to hear if your venue might be a good fit.
+
+Happy to jump on a quick call if that's easier — just let me know a good time.
+
+Best,
+Eve
+```
+
+## General Workflow
+
+1. **Discovery**: Send discovery email with venue contact. Save `thread_id`.
+2. **Wait for reply**: Check threads periodically or via heartbeat.
+3. **Read reply**: Use `extracted_text` to get just the new content.
+4. **Booking**: Once team approves, reply in the same thread with booking confirmation email.
+5. **Follow-up**: If no reply in 48h, send follow-up in the same thread.
+6. **Log everything**: Save thread as JSONL chat session + log to `communications` DuckDB object.
 
 ## Gotchas
 

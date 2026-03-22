@@ -1,0 +1,201 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "last_modification_timestamp": 0,
+  "agent_name": "Eve - Venue Discovery",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 0,
+    "conversation_flow_id": ""
+  },
+  "language": "en-US",
+  "data_storage_setting": "everything",
+  "version": 0,
+  "is_published": false,
+  "voice_id": "retell-Cimo",
+  "max_call_duration_ms": 360000,
+  "interruption_sensitivity": 0.7,
+  "user_dtmf_options": {},
+  "conversationFlow": {
+    "conversation_flow_id": "",
+    "version": 0,
+    "global_prompt": "## Task Overview ##\n\nYou are Eve, a professional event coordinator calling on behalf of a community organization. You're reaching out to venues to check availability and gather details for an upcoming event.\n\n## Response Guideline ##\n\nBe warm, professional, and efficient. Ask questions naturally — do NOT read a checklist. Keep the call under 5 minutes.",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "static_text",
+          "text": "Hi, my name is Eve. I'm calling on behalf of {{organization}}. We're planning a {{event_type}} and I was wondering if I could ask a few quick questions about your venue?"
+        },
+        "name": "Greeting",
+        "edges": [
+          {
+            "condition": "Venue responds",
+            "id": "edge-greeting-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Venue responds"
+            },
+            "destination_node_id": "node-availability"
+          }
+        ],
+        "start_speaker": "agent",
+        "id": "start-node-1",
+        "type": "conversation",
+        "display_position": { "x": 500, "y": 500 }
+      },
+      {
+        "name": "Check Availability",
+        "edges": [
+          {
+            "condition": "Venue confirms availability or suggests alternative dates",
+            "id": "edge-avail-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Venue confirms availability or suggests alternative dates"
+            },
+            "destination_node_id": "node-pricing"
+          },
+          {
+            "condition": "Venue is not available and has no alternatives",
+            "id": "edge-avail-2",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Venue is not available and has no alternatives"
+            },
+            "destination_node_id": "node-no-avail"
+          }
+        ],
+        "id": "node-availability",
+        "type": "conversation",
+        "display_position": { "x": 1000, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask if they are available on {{event_date}} for {{headcount}} guests. If not, ask what nearby dates would work."
+        }
+      },
+      {
+        "name": "Pricing & Details",
+        "edges": [
+          {
+            "condition": "Got pricing and inclusion details",
+            "id": "edge-pricing-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Got pricing and inclusion details"
+            },
+            "destination_node_id": "node-catering"
+          }
+        ],
+        "id": "node-pricing",
+        "type": "conversation",
+        "display_position": { "x": 1500, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask about pricing. What's the total cost or room hire fee? Is there a minimum spend? What's included — tables, chairs, AV equipment, staff? If they ask about our budget, say: We're working with around {{budget}} for the venue."
+        }
+      },
+      {
+        "name": "Catering & Deposit",
+        "edges": [
+          {
+            "condition": "Got catering and deposit info",
+            "id": "edge-catering-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Got catering and deposit info"
+            },
+            "destination_node_id": "node-logistics"
+          }
+        ],
+        "id": "node-catering",
+        "type": "conversation",
+        "display_position": { "x": 2000, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask about catering — do they provide in-house catering or can we bring outside catering? Is there a catering minimum? Also ask about the deposit — how much is required and when is it due?"
+        }
+      },
+      {
+        "name": "Logistics",
+        "edges": [
+          {
+            "condition": "Got logistics info",
+            "id": "edge-logistics-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Got logistics info"
+            },
+            "destination_node_id": "node-wrap-up"
+          }
+        ],
+        "id": "node-logistics",
+        "type": "conversation",
+        "display_position": { "x": 2500, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Naturally ask about a few more details: Is it a private room or shared space? What are the setup and teardown times? Any noise restrictions or curfews? Is the venue wheelchair accessible? Is there parking nearby? What's the cancellation policy? Don't ask all of these — pick 2-3 that flow naturally in conversation."
+        }
+      },
+      {
+        "name": "Wrap Up",
+        "edges": [
+          {
+            "condition": "Got contact info and ready to end",
+            "id": "edge-wrap-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Got contact info and ready to end"
+            },
+            "destination_node_id": "node-end"
+          }
+        ],
+        "id": "node-wrap-up",
+        "type": "conversation",
+        "display_position": { "x": 3000, "y": 500 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Say: Great, I'll share this with the team and we'll get back to you. What's the best way to follow up — email or phone? Get their contact name and email address. Then say: Thank you so much for your time. We'll be in touch soon."
+        }
+      },
+      {
+        "name": "No Availability",
+        "edges": [
+          {
+            "condition": "Conversation ending",
+            "id": "edge-no-avail-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Conversation ending"
+            },
+            "destination_node_id": "node-end"
+          }
+        ],
+        "id": "node-no-avail",
+        "type": "conversation",
+        "display_position": { "x": 1500, "y": 800 },
+        "instruction": {
+          "type": "prompt",
+          "text": "Politely ask: Do you happen to know any similar venues nearby that might work for a group of {{headcount}}? Thank them for their time regardless."
+        }
+      },
+      {
+        "name": "End Call",
+        "id": "node-end",
+        "type": "end",
+        "display_position": { "x": 3500, "y": 500 },
+        "instruction": { "type": "prompt", "text": "" }
+      }
+    ],
+    "start_node_id": "start-node-1",
+    "start_speaker": "agent",
+    "tools": [],
+    "model_choice": {
+      "type": "cascading",
+      "model": "gpt-4.1"
+    },
+    "knowledge_base_ids": [],
+    "mcps": [],
+    "begin_tag_display_position": { "x": 100, "y": 600 },
+    "is_published": false
+  }
+}
