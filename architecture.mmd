@@ -1,0 +1,186 @@
+%%{ init: { "theme": "base", "themeVariables": { "fontSize": "14px" } } }%%
+flowchart TD
+
+    %% ── Entry ──────────────────────────────────────────────
+    subgraph CLI["CLI Layer"]
+        ENTRY["denchclaw.mjs\nBootstrap Loader"]
+        MAIN["entry.ts\nMain Entry"]
+        RUNNER["run-main.ts\nCLI Runtime"]
+        CMDREG["Command Registry\nCommander.js"]
+
+        ENTRY --> MAIN
+        MAIN -->|"normalize env,\nparse profile"| RUNNER
+        RUNNER -->|"build program"| CMDREG
+    end
+
+    subgraph COMMANDS["CLI Commands"]
+        BOOT["bootstrap\nOnboarding Wizard"]
+        UPDATE["update\nUpdate Runtime"]
+        START["start / stop\nrestart"]
+        TELEM_CMD["telemetry\nenable / disable"]
+        DELEGATE["Delegate to\nGlobal OpenClaw"]
+
+        CMDREG --> BOOT
+        CMDREG --> UPDATE
+        CMDREG --> START
+        CMDREG --> TELEM_CMD
+        CMDREG -->|"non-core cmds"| DELEGATE
+    end
+
+    %% ── Web Application ───────────────────────────────────
+    subgraph WEB["Web Application · Next.js 15"]
+        direction TB
+        WEBRT["Web Runtime\nManager"]
+        SERVER["Standalone\nNode Server"]
+        APIROUTES["API Routes"]
+        UI["React 19 UI"]
+
+        WEBRT -->|"install & spawn"| SERVER
+        SERVER --> APIROUTES
+        SERVER --> UI
+    end
+
+    subgraph WEBAPI["Web API Routes"]
+        CHAT_API["Chat"]
+        WORKSPACE_API["Workspace"]
+        TERMINAL_API["Terminal\nxterm + pty"]
+        SESSIONS_API["Sessions"]
+        SKILLS_API["Skills Registry"]
+        APPS_API["App Builder"]
+        GATEWAY_API["Gateway Proxy"]
+        MEMORIES_API["Memories"]
+    end
+
+    subgraph WEBUI["Web UI Components"]
+        CHATUI["Chat Interface\nVercel AI SDK"]
+        EDITOR["Tiptap\nRich Text Editor"]
+        TABLES["TanStack Tables\nData Grid"]
+        MONACOUI["Monaco Editor\nCode Editing"]
+        CHARTS["Recharts\nVisualizations"]
+        DND["Drag & Drop\ndnd-kit"]
+    end
+
+    APIROUTES --> WEBAPI
+    UI --> WEBUI
+
+    %% ── Skills ─────────────────────────────────────────────
+    subgraph SKILLS["Skills · Pluggable Modules"]
+        direction TB
+        EVENTBRITE["Eventbrite\nEvent Management"]
+        RETELL["Retell AI\nVoice Calls"]
+        AGENTMAIL["AgentMail\nEmail Inbox"]
+        ORCHESTRATION["Event\nOrchestration"]
+        CRM["CRM / Database\nDuckDB"]
+        BROWSER["Browser\nAutomation"]
+        APPBUILDER["App Builder\nWorkspace Apps"]
+        PRIVACY["Privacy Layer\nPII Protection"]
+    end
+
+    %% ── Extensions ─────────────────────────────────────────
+    subgraph EXTENSIONS["Extensions · Platform Plugins"]
+        AIGATEWAY["Dench AI Gateway\nModel Provider"]
+        IDENTITY["Dench Identity\nAuthentication"]
+    end
+
+    %% ── Core Services ──────────────────────────────────────
+    subgraph CORE["Core Services"]
+        LOGGING["Logging\ntslog + rollover"]
+        TELEMETRY["Telemetry\nClient"]
+        CONFIG["Config & Paths\n~/.openclaw-dench"]
+        PROCESS["Process Mgmt\nSignal Bridge"]
+        INFRA["Infra Utils\nRuntime Guard"]
+        TERMINAL_MOD["Terminal Theme\nEve Palette"]
+    end
+
+    %% ── External Services ──────────────────────────────────
+    subgraph EXTERNAL["External Services"]
+        EVENTBRITE_API["Eventbrite API"]
+        RETELL_API["Retell AI API"]
+        AGENTMAIL_API["AgentMail API"]
+        OPENCLAW["OpenClaw\nAgent Platform"]
+    end
+
+    %% ── Storage ────────────────────────────────────────────
+    subgraph STORAGE["Local Storage"]
+        DUCKDB[("DuckDB\nWorkspace Data")]
+        JSONCONF[("JSON Config\nopenclaw.json")]
+        OAUTH[("OAuth Creds\ncredentials/")]
+        LOGS[("Rolling Logs\n*.log")]
+        MARKDOWN[("Knowledge Tree\nMarkdown Docs")]
+    end
+
+    %% ── Infrastructure ─────────────────────────────────────
+    subgraph INFRA_CI["Infrastructure & CI/CD"]
+        GHA["GitHub Actions\nRelease Workflow"]
+        NPM["npm Registry\neveevent"]
+        LAUNCHD["macOS launchd\nDaemon"]
+        DOCKER["Docker Support\nDaemonless Mode"]
+    end
+
+    %% ── Relationships ──────────────────────────────────────
+
+    %% CLI → Web
+    BOOT -->|"seed workspace\n& install app"| WEBRT
+    START -->|"lifecycle\ncontrol"| WEBRT
+    UPDATE -->|"reinstall\nstandalone"| WEBRT
+
+    %% CLI → Core
+    BOOT --> CONFIG
+    RUNNER --> LOGGING
+    RUNNER --> TELEMETRY
+    RUNNER --> INFRA
+    BOOT -->|"model selection"| AIGATEWAY
+
+    %% CLI → External
+    DELEGATE -->|"spawn CLI"| OPENCLAW
+
+    %% Web → Skills
+    SKILLS_API -->|"invoke"| SKILLS
+
+    %% Web → Storage
+    WORKSPACE_API --> DUCKDB
+    MEMORIES_API --> MARKDOWN
+    GATEWAY_API -->|"proxy"| AIGATEWAY
+
+    %% Skills → External APIs
+    EVENTBRITE -->|"REST"| EVENTBRITE_API
+    RETELL -->|"REST"| RETELL_API
+    AGENTMAIL -->|"REST"| AGENTMAIL_API
+    ORCHESTRATION --> EVENTBRITE
+    ORCHESTRATION --> RETELL
+    ORCHESTRATION --> AGENTMAIL
+    CRM --> DUCKDB
+
+    %% Extensions
+
+
+    %% Core → Storage
+    CONFIG --> JSONCONF
+    CONFIG --> OAUTH
+    LOGGING --> LOGS
+
+    %% Infra/CI
+    GHA -->|"publish"| NPM
+    WEBRT -->|"register"| LAUNCHD
+
+    %% ── Styles ─────────────────────────────────────────────
+    classDef cli fill:#4A90D9,stroke:#2C5F8A,color:#fff,rx:8
+    classDef web fill:#7B68EE,stroke:#5A4FCF,color:#fff,rx:8
+    classDef skill fill:#E8913A,stroke:#C47020,color:#fff,rx:8
+    classDef ext fill:#9B59B6,stroke:#7D3C98,color:#fff,rx:8
+    classDef core fill:#5DADE2,stroke:#3498DB,color:#fff,rx:8
+    classDef external fill:#F39C12,stroke:#D68910,color:#fff,rx:8
+    classDef storage fill:#27AE60,stroke:#1E8449,color:#fff,rx:8
+    classDef infra fill:#95A5A6,stroke:#717D7E,color:#fff,rx:8
+
+    class ENTRY,MAIN,RUNNER,CMDREG cli
+    class BOOT,UPDATE,START,TELEM_CMD,DELEGATE cli
+    class WEBRT,SERVER,APIROUTES,UI web
+    class CHAT_API,WORKSPACE_API,TERMINAL_API,SESSIONS_API,SKILLS_API,APPS_API,GATEWAY_API,MEMORIES_API web
+    class CHATUI,EDITOR,TABLES,MONACOUI,CHARTS,DND web
+    class EVENTBRITE,RETELL,AGENTMAIL,ORCHESTRATION,CRM,BROWSER,APPBUILDER,PRIVACY skill
+    class AIGATEWAY,IDENTITY ext
+    class LOGGING,TELEMETRY,CONFIG,PROCESS,INFRA,TERMINAL_MOD core
+    class EVENTBRITE_API,RETELL_API,AGENTMAIL_API,OPENCLAW external
+    class DUCKDB,JSONCONF,OAUTH,LOGS,MARKDOWN storage
+    class GHA,NPM,LAUNCHD,DOCKER infra
