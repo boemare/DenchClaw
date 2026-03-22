@@ -1,6 +1,6 @@
 {
   "name": "eveevent",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Eve — AI community event agent for DOAC. Venue sourcing, booking, and event management powered by Retell AI, Eventbrite, and AgentMail.",
   "keywords": ["ai", "events", "community", "agent", "openclaw"],
   "homepage": "https://github.com/boemare/DenchClaw#readme",
