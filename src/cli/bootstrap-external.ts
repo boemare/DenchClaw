@@ -2389,15 +2389,6 @@ export async function bootstrapCommand(
       setEnv("AGENTMAIL_API_KEY", amKey.trim());
     }
 
-    const amInbox = await text({
-      message: stylePromptMessage("AgentMail Inbox ID (from create inbox response)"),
-      placeholder: "skip",
-      initialValue: readExisting("AGENTMAIL_INBOX_ID") ?? "",
-    });
-    if (!isCancel(amInbox) && typeof amInbox === "string" && amInbox.trim()) {
-      setEnv("AGENTMAIL_INBOX_ID", amInbox.trim());
-    }
-
     const amEmail = await text({
       message: stylePromptMessage("AgentMail email (e.g. eve@agentmail.to)"),
       placeholder: "skip",
@@ -2405,6 +2396,7 @@ export async function bootstrapCommand(
     });
     if (!isCancel(amEmail) && typeof amEmail === "string" && amEmail.trim()) {
       setEnv("AGENTMAIL_EMAIL", amEmail.trim());
+      setEnv("AGENTMAIL_INBOX_ID", amEmail.trim());
     }
 
     mkdirSync(workspaceDir, { recursive: true });
