@@ -300,7 +300,7 @@ export function seedSampleApp(appsDir: string): void {
   writeFileSync(
     path.join(appDir, ".dench.yaml"),
     `name: "Hello World"
-description: "A sample DenchClaw app"
+description: "A sample Eve app"
 icon: "sparkles"
 version: "1.0.0"
 entry: "index.html"
@@ -333,7 +333,7 @@ permissions:
   </style>
 </head>
 <body>
-  <h1>Hello from DenchClaw!</h1>
+  <h1>Hello from Eve!</h1>
   <p>This is a sample app running inside your workspace.</p>
   <div class="stats" id="stats">Loading...</div>
   <script>
@@ -350,7 +350,7 @@ permissions:
           el.innerHTML += '<div class="stat"><div class="label">' + row.name + '</div><div class="value">' + (row.entry_count || 0) + '</div></div>';
         }
         if (!result.rows || result.rows.length === 0) {
-          el.textContent = 'No objects found yet. Create some in DenchClaw!';
+          el.textContent = 'No objects found yet. Create some in Eve!';
         }
       } catch (err) {
         document.getElementById('stats').textContent = 'Could not load data: ' + err.message;

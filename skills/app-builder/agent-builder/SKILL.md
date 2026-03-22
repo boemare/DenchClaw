@@ -1,6 +1,6 @@
 ---
 name: agent-builder
-description: Build AI-powered DenchClaw apps that interact with the OpenClaw agent — create chat sessions, send and receive messages with streaming, expose app tools for agent invocation, and access agent memory.
+description: Build AI-powered Eve apps that interact with the OpenClaw agent — create chat sessions, send and receive messages with streaming, expose app tools for agent invocation, and access agent memory.
 metadata: { "openclaw": { "inject": true, "always": true, "emoji": "🤖" } }
 ---
 

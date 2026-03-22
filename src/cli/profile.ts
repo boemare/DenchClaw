@@ -117,7 +117,7 @@ export function applyCliProfileEnv(params: {
 
   const warning =
     requestedProfile && requestedProfile !== profile
-      ? `Ignoring requested profile '${requestedProfile}'; DenchClaw always uses --profile ${DENCHCLAW_PROFILE}.`
+      ? `Ignoring requested profile '${requestedProfile}'; Eve always uses --profile ${DENCHCLAW_PROFILE}.`
       : undefined;
 
   return {

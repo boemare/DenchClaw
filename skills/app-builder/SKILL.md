@@ -1,12 +1,12 @@
 ---
 name: app-builder
-description: Build and manage DenchClaw apps — self-contained web applications that run inside the workspace with access to DuckDB data, workspace objects, AI chat, and the full DenchClaw platform API.
+description: Build and manage Eve apps — self-contained web applications that run inside the workspace with access to DuckDB data, workspace objects, AI chat, and the full Eve platform API.
 metadata: { "openclaw": { "inject": true, "always": true, "emoji": "🔨" } }
 ---
 
 # App Builder
 
-You can build **Dench Apps** — self-contained web applications that run inside DenchClaw's workspace. Apps appear in the sidebar with their own icon and name, and open as tabs in the main content area. They run in a sandboxed iframe with `allow-same-origin allow-scripts allow-popups allow-forms`.
+You can build **Eve Apps** — self-contained web applications that run inside Eve's workspace. Apps appear in the sidebar with their own icon and name, and open as tabs in the main content area. They run in a sandboxed iframe with `allow-same-origin allow-scripts allow-popups allow-forms`.
 
 ---
 
@@ -174,7 +174,7 @@ The bridge SDK is auto-injected into every app's HTML. It provides `window.dench
 // Get the app's own parsed manifest
 const manifest = await dench.app.getManifest();
 
-// Get current DenchClaw UI theme
+// Get current Eve UI theme
 const theme = await dench.app.getTheme();
 // Returns: "dark" or "light"
 ```
@@ -221,7 +221,7 @@ whenDenchReady(async () => {
 
 ## Theme & Styling System
 
-Apps should respect the DenchClaw theme. The bridge provides the current theme ("dark" or "light"). Build your CSS to support both.
+Apps should respect the Eve theme. The bridge provides the current theme ("dark" or "light"). Build your CSS to support both.
 
 ### Recommended Base Styles
 
@@ -650,7 +650,7 @@ When asked to build an app, follow these steps:
 7. **Apply theme** via `dench.app.getTheme()` on init
 8. **Handle window resizing** (canvas-based apps must call `resizeCanvas` / update renderer)
 9. **Add error handling** for all bridge API calls
-10. **Test the app** opens correctly as a tab in DenchClaw
+10. **Test the app** opens correctly as a tab in Eve
 
 ---
 

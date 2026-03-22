@@ -1,6 +1,6 @@
 ---
 name: data-builder
-description: Build data-driven DenchClaw apps with full CRUD access to workspace objects (.object.yaml tables), DuckDB queries and mutations, data dashboards with Chart.js and D3.js, and interactive tools.
+description: Build data-driven Eve apps with full CRUD access to workspace objects (.object.yaml tables), DuckDB queries and mutations, data dashboards with Chart.js and D3.js, and interactive tools.
 metadata: { "openclaw": { "inject": true, "always": true, "emoji": "📊" } }
 ---
 

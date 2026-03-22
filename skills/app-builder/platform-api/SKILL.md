@@ -1,22 +1,22 @@
 ---
 name: platform-api
-description: Platform API reference for DenchClaw apps — UI integration, per-app storage, HTTP proxy, real-time events, inter-app messaging, cron scheduling, webhooks, clipboard, context, and widget mode.
+description: Platform API reference for Eve apps — UI integration, per-app storage, HTTP proxy, real-time events, inter-app messaging, cron scheduling, webhooks, clipboard, context, and widget mode.
 metadata: { "openclaw": { "inject": true, "always": true, "emoji": "⚡" } }
 ---
 
 # App Platform API
 
-This skill documents the platform-level APIs available to DenchClaw apps. For core app structure, see the parent **app-builder** skill. For data/objects, see **data-builder**. For AI chat, see **agent-builder**.
+This skill documents the platform-level APIs available to Eve apps. For core app structure, see the parent **app-builder** skill. For data/objects, see **data-builder**. For AI chat, see **agent-builder**.
 
 ## UI Integration (`ui` permission required)
 
 ```javascript
-// Show a toast notification in the parent DenchClaw UI
+// Show a toast notification in the parent Eve UI
 await dench.ui.toast("Record saved successfully", { type: "success" });
 await dench.ui.toast("Something went wrong", { type: "error" });
 await dench.ui.toast("Processing...", { type: "info" });
 
-// Navigate DenchClaw to a workspace path (opens object, file, or app)
+// Navigate Eve to a workspace path (opens object, file, or app)
 await dench.ui.navigate("/people");           // open the people object
 await dench.ui.navigate("/apps/my-app.dench.app"); // open another app
 
@@ -64,7 +64,7 @@ Storage is backed by a JSON file at `{workspace}/.dench-app-data/{appName}/store
 
 ## HTTP Proxy (`http` permission required)
 
-Make HTTP requests from apps without CORS restrictions. Requests are proxied through the DenchClaw server.
+Make HTTP requests from apps without CORS restrictions. Requests are proxied through the Eve server.
 
 ```javascript
 // Simple GET
@@ -85,7 +85,7 @@ console.log(result.status);  // 200
 console.log(result.body);    // response body as string
 ```
 
-Security: requests to localhost, private IPs, and internal DenchClaw URLs are blocked.
+Security: requests to localhost, private IPs, and internal Eve URLs are blocked.
 
 ## Real-time Events (`events` permission required)
 
@@ -214,7 +214,7 @@ await dench.clipboard.write("Copied text content");
 const text = await dench.clipboard.read();
 ```
 
-Note: clipboard operations are proxied through the parent DenchClaw window.
+Note: clipboard operations are proxied through the parent Eve window.
 
 ## Widget Mode
 
@@ -280,7 +280,7 @@ permissions:
 </html>
 ```
 
-Widget-mode apps appear in the DenchClaw dashboard view alongside other widgets, arranged in a responsive grid.
+Widget-mode apps appear in the Eve dashboard view alongside other widgets, arranged in a responsive grid.
 
 ## Patterns
 

@@ -89,7 +89,7 @@ export function EmptyState({
 				) : (
 					<>
 						The workspace directory was not
-						found. Run the denchclaw bootstrap flow or start a
+						found. Run the Eve bootstrap flow or start a
 						conversation and the agent will set it up
 						automatically in the managed profile.
 					</>

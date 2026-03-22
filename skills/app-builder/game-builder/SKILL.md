@@ -1,12 +1,12 @@
 ---
 name: game-builder
-description: Build 2D and 3D games as DenchClaw apps using p5.js, Three.js, Matter.js, and other game libraries. Covers game architecture, sprites, physics, particles, audio, tilemaps, and complete game examples.
+description: Build 2D and 3D games as Eve apps using p5.js, Three.js, Matter.js, and other game libraries. Covers game architecture, sprites, physics, particles, audio, tilemaps, and complete game examples.
 metadata: { "openclaw": { "inject": true, "always": true, "emoji": "🎮" } }
 ---
 
 # App Game Builder
 
-This skill covers building 2D and 3D games as DenchClaw apps. For core app structure, manifest reference, and bridge API basics, see the parent **app-builder** skill (`app-builder/SKILL.md`).
+This skill covers building 2D and 3D games as Eve apps. For core app structure, manifest reference, and bridge API basics, see the parent **app-builder** skill (`app-builder/SKILL.md`).
 
 ---
 
@@ -75,7 +75,7 @@ let isDark = true;
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // Detect theme from DenchClaw
+  // Detect theme from Eve
   if (window.dench) {
     window.dench.app.getTheme().then(theme => {
       isDark = theme === 'dark';

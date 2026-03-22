@@ -1510,14 +1510,14 @@ function remediationForGatewayFailure(
   if (normalized.includes("address already in use") || normalized.includes("eaddrinuse")) {
     return `Port ${port} is busy. The bootstrap will auto-assign an available port, or you can explicitly specify one with \`--gateway-port <port>\`.`;
   }
-  return `Run \`openclaw --profile ${profile} doctor --fix\` and retry \`npx denchclaw bootstrap\`.`;
+  return `Run \`openclaw --profile ${profile} doctor --fix\` and retry \`npx eve bootstrap\`.`;
 }
 
 function remediationForWebUiFailure(port: number): string {
   return [
     `Web UI did not respond on ${port}.`,
-    `Run \`npx denchclaw update --web-port ${port}\` to refresh the managed web runtime.`,
-    `If the port is stuck, run \`npx denchclaw stop --web-port ${port}\` first.`,
+    `Run \`npx eve update --web-port ${port}\` to refresh the managed web runtime.`,
+    `If the port is stuck, run \`npx eve stop --web-port ${port}\` first.`,
   ].join(" ");
 }
 
@@ -1695,8 +1695,8 @@ export function buildBootstrapDiagnostics(params: {
       createCheck(
         "profile",
         "fail",
-        `DenchClaw profile drift detected (${params.profile}).`,
-        `DenchClaw requires \`--profile ${DEFAULT_DENCHCLAW_PROFILE}\`. Re-run bootstrap to repair environment defaults.`,
+        `Eve profile drift detected (${params.profile}).`,
+        `Eve requires \`--profile ${DEFAULT_DENCHCLAW_PROFILE}\`. Re-run bootstrap to repair environment defaults.`,
       ),
     );
   }
@@ -1757,7 +1757,7 @@ export function buildBootstrapDiagnostics(params: {
         "state-isolation",
         "fail",
         `Unexpected state dir: ${stateDir}.`,
-        `DenchClaw requires \`${expectedStateDir}\`. Re-run bootstrap to restore pinned defaults.`,
+        `Eve requires \`${expectedStateDir}\`. Re-run bootstrap to restore pinned defaults.`,
       ),
     );
   }
@@ -1772,7 +1772,7 @@ export function buildBootstrapDiagnostics(params: {
         "daemon-label",
         "fail",
         `Gateway service label mismatch (${launchAgentLabel}).`,
-        `DenchClaw requires launch agent label ${expectedLaunchAgentLabel}.`,
+        `Eve requires launch agent label ${expectedLaunchAgentLabel}.`,
       ),
     );
   }
@@ -2188,7 +2188,7 @@ export async function bootstrapCommand(
         theme.muted(
           "Eve collects anonymous telemetry to improve the product.\n" +
             "No personal data is ever collected. Disable anytime:\n" +
-            "  npx denchclaw telemetry disable\n" +
+            "  npx eve telemetry disable\n" +
             "  DENCHCLAW_TELEMETRY_DISABLED=1\n" +
             "  DO_NOT_TRACK=1\n" +
             "Learn more: https://github.com/DenchHQ/DenchClaw/blob/main/TELEMETRY.md\n",
