@@ -547,7 +547,7 @@ export function ChatSessionsSidebar({
 	// ── Dynamic tab list ──
 	const tabs = useMemo(() => {
 		const result: SidebarTab[] = [
-			{ id: "denchclaw", label: "DenchClaw", count: denchClawSessions.length },
+			{ id: "denchclaw", label: "Eve", count: denchClawSessions.length },
 		];
 		const channelOrder = ["telegram", "whatsapp", "discord", "slack", "signal", "imessage", "googlechat", "nostr"];
 		for (const channel of channelOrder) {

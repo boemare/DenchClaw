@@ -12,9 +12,9 @@ import {
 	useState,
 } from "react";
 import {
-	Mail, Users, DollarSign, Calendar, Zap, FileText, Database,
-	Code, Bug, Clock, BarChart3, PenTool, Globe, Search, Sparkles,
-	FolderOpen, Table, BrainCircuit, MessageSquare, Workflow,
+	Mail, Users, Calendar, Zap, MapPin, Phone,
+	Globe, Search, Sparkles, PartyPopper, ClipboardList,
+	MessageSquare, Megaphone, UserCheck, TicketCheck,
 } from "lucide-react";
 import { ChatMessage } from "./chat-message";
 import {
@@ -39,124 +39,94 @@ import {
 
 const PROMPT_SUGGESTIONS = [
 	{
-		id: "email-draft",
-		label: "Draft an Email",
+		id: "plan-dinner",
+		label: "Plan a Dinner",
+		icon: PartyPopper,
+		prompt: "Set up a fan dinner for 30 people in NYC next Friday. Budget around $2000. Find venue options, book the best one, and create a Eventbrite event page.",
+	},
+	{
+		id: "find-venue",
+		label: "Find a Venue",
+		icon: MapPin,
+		prompt: "Research the best venues in London for a 50-person DOAC meetup. I need somewhere casual, affordable, and available next month. Call the top 3 to check availability.",
+	},
+	{
+		id: "book-venue",
+		label: "Book a Venue",
+		icon: Phone,
+		prompt: "Call the shortlisted venues for the NYC dinner and confirm availability for next Friday, 30 people, budget $2000. Get quotes and present options.",
+	},
+	{
+		id: "email-venue",
+		label: "Email a Venue",
 		icon: Mail,
-		prompt: "Draft a professional follow-up email to a client after our initial meeting, thanking them and summarizing the next steps we discussed",
+		prompt: "Email the venue we picked for the London meetup to confirm the booking. Include date, headcount, any catering requirements, and ask about AV setup.",
 	},
 	{
-		id: "enrich-contacts",
-		label: "Enrich Leads",
-		icon: Users,
-		prompt: "When a new contact is added to my CRM, find their LinkedIn profile and company details and update the record",
+		id: "create-luma-event",
+		label: "Create Eventbrite Event",
+		icon: TicketCheck,
+		prompt: "Create a new event on Eventbrite for a DOAC community meetup in LA on April 15th. Include a description, venue details, and set the capacity to 40.",
 	},
 	{
-		id: "invoice-reminder",
-		label: "Invoice Reminder",
-		icon: DollarSign,
-		prompt: "Draft a friendly payment reminder email for an invoice that is 7 days overdue, including the invoice number and amount",
+		id: "check-rsvps",
+		label: "Check RSVPs",
+		icon: UserCheck,
+		prompt: "Check the RSVPs for our upcoming events on Eventbrite. Give me a summary of confirmed attendees, maybes, and total capacity remaining.",
 	},
 	{
-		id: "schedule-report",
-		label: "Weekly Report",
-		icon: Calendar,
-		prompt: "Set up a cron job that runs every Friday at 4pm to compile a summary of all completed tasks this week and email it to the team",
+		id: "event-status",
+		label: "Event Status",
+		icon: ClipboardList,
+		prompt: "Show me the status of all upcoming events — which ones are confirmed, which still need venues, and what's the RSVP count for each?",
 	},
 	{
-		id: "auto-tasks",
-		label: "Auto Tasks",
-		icon: Zap,
-		prompt: "Create a workflow that automatically creates a task whenever someone mentions me in an email with a request or action item",
-	},
-	{
-		id: "summarize-docs",
-		label: "Summarize Docs",
-		icon: FileText,
-		prompt: "Read through all the documents in my workspace and create a concise summary of the key information across all files",
-	},
-	{
-		id: "query-data",
-		label: "Query Database",
-		icon: Database,
-		prompt: "Connect to my database and show me the top 10 customers by revenue this quarter, including their contact details",
-	},
-	{
-		id: "code-review",
-		label: "Review Code",
-		icon: Code,
-		prompt: "Review the code in my workspace for potential bugs, security issues, and performance improvements. Prioritize critical findings",
-	},
-	{
-		id: "debug-error",
-		label: "Debug Error",
-		icon: Bug,
-		prompt: "Help me debug this error I'm seeing in production. Walk me through the likely causes and how to fix each one",
-	},
-	{
-		id: "daily-digest",
-		label: "Daily Digest",
-		icon: Clock,
-		prompt: "Set up a daily digest that runs every morning at 9am summarizing my unread emails, calendar events, and pending tasks",
-	},
-	{
-		id: "analyze-csv",
-		label: "Analyze Data",
-		icon: BarChart3,
-		prompt: "Analyze the CSV file in my workspace — find trends, outliers, and generate a visual report with key insights",
-	},
-	{
-		id: "write-content",
-		label: "Write Content",
-		icon: PenTool,
-		prompt: "Write a compelling blog post about how AI automation is transforming small business operations in 2026",
-	},
-	{
-		id: "web-research",
-		label: "Web Research",
-		icon: Globe,
-		prompt: "Research the top 5 competitors in my industry and create a comparison table with their pricing, features, and market position",
-	},
-	{
-		id: "search-files",
-		label: "Search Files",
-		icon: Search,
-		prompt: "Search through all files in my workspace and find every mention of customer feedback, complaints, or feature requests",
-	},
-	{
-		id: "brainstorm",
-		label: "Brainstorm Ideas",
+		id: "fan-meetup",
+		label: "Fan Meetup Ideas",
 		icon: Sparkles,
-		prompt: "Help me brainstorm 10 creative marketing campaign ideas for launching a new product to our existing customer base",
+		prompt: "Brainstorm 5 creative fan meetup ideas for DOAC communities in different cities. Think about what would make fans feel connected.",
 	},
 	{
-		id: "organize-files",
-		label: "Organize Files",
-		icon: FolderOpen,
-		prompt: "Look at all the files in my workspace and suggest a better folder structure. Then reorganize them for me",
+		id: "post-event",
+		label: "Post-Event Summary",
+		icon: Users,
+		prompt: "Compile a summary of last week's events — attendance numbers, highlights, and what we should do differently next time.",
 	},
 	{
-		id: "create-spreadsheet",
-		label: "Build Spreadsheet",
-		icon: Table,
-		prompt: "Create a project tracking spreadsheet with columns for task name, assignee, status, priority, due date, and notes",
+		id: "research-city",
+		label: "Research a City",
+		icon: Globe,
+		prompt: "Research the DOAC fan community in Tokyo. What's the audience size, best venue options, and ideal time for a meetup?",
 	},
 	{
-		id: "ai-strategy",
-		label: "AI Strategy",
-		icon: BrainCircuit,
-		prompt: "Help me create an AI adoption strategy for my team — which tasks should we automate first for the biggest impact?",
+		id: "guest-list",
+		label: "Manage Guest List",
+		icon: Search,
+		prompt: "Check the guest list for the London dinner on Eventbrite — are we at capacity? If not, should we open more spots or keep it intimate?",
 	},
 	{
-		id: "meeting-prep",
-		label: "Meeting Prep",
+		id: "venue-followup",
+		label: "Venue Follow-up",
+		icon: Megaphone,
+		prompt: "Follow up with the venue for Saturday's event — confirm final headcount, catering order, and setup time. Call them if email doesn't get a response.",
+	},
+	{
+		id: "coordinate-team",
+		label: "Team Coordination",
 		icon: MessageSquare,
-		prompt: "Prepare a briefing document for my upcoming client meeting. Include their recent activity, open issues, and talking points",
+		prompt: "Help coordinate the team for this weekend's event. Who's handling what? Draft a quick briefing with roles and responsibilities.",
 	},
 	{
-		id: "build-workflow",
-		label: "Build Workflow",
-		icon: Workflow,
-		prompt: "Design an automated onboarding workflow for new clients — from welcome email to document collection to account setup",
+		id: "day-of-checklist",
+		label: "Day-of Checklist",
+		icon: Calendar,
+		prompt: "Create a day-of checklist for tomorrow's dinner event. Include venue confirmation call, final headcount check on Eventbrite, and any last-minute logistics.",
+	},
+	{
+		id: "scale-events",
+		label: "Scale to New City",
+		icon: Zap,
+		prompt: "We want to expand DOAC meetups to 5 new cities. Research venue options in each, estimate budgets, and create a rollout plan.",
 	},
 ];
 
@@ -923,7 +893,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 		const [rawView, _setRawView] = useState(false);
 
 		// ── Hero state (new chat screen) ──
-		const greeting = "What can I help with?";
+		const greeting = "Hey, I'm Eve. What event are we planning?";
 		const visiblePrompts = PROMPT_SUGGESTIONS.slice(0, 7);
 
 		const handlePromptClick = useCallback((promptId: string) => {
@@ -2140,7 +2110,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 					onNativeFileDrop={isSubagentMode ? undefined : uploadAndAttachNativeFiles}
 					placeholder={
 						showHeroState
-							? "Build a workflow to automate your tasks"
+							? "Plan an event, send invites, or check RSVPs..."
 							: isSubagentMode
 								? (isStreaming ? "Type to queue a message..." : "Type @ to mention files...")
 								: compact && fileContext

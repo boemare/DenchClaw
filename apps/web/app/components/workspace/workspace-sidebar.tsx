@@ -569,13 +569,13 @@ export function WorkspaceSidebar({
 				style={{ borderColor: "var(--color-border)" }}
 			>
 				<a
-					href="https://dench.com"
+					href="https://steven.com"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm"
 					style={{ color: "var(--color-text-muted)" }}
 				>
-					dench.com{process.env.NEXT_PUBLIC_DENCHCLAW_VERSION ? ` (v${process.env.NEXT_PUBLIC_DENCHCLAW_VERSION})` : ""}
+					Eve
 				</a>
 				<div className="flex items-center gap-0.5">
 					{onToggleHidden && (

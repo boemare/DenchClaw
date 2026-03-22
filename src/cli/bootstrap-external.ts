@@ -2186,7 +2186,7 @@ export async function bootstrapCommand(
     if (!telemetryCfg.noticeShown) {
       runtime.log(
         theme.muted(
-          "Dench collects anonymous telemetry to improve the product.\n" +
+          "Eve collects anonymous telemetry to improve the product.\n" +
             "No personal data is ever collected. Disable anytime:\n" +
             "  npx denchclaw telemetry disable\n" +
             "  DENCHCLAW_TELEMETRY_DISABLED=1\n" +
@@ -2296,12 +2296,116 @@ export async function bootstrapCommand(
 
   preCloudSpinner?.stop("Gateway ready.");
 
-  const denchCloudSelection = await resolveDenchCloudBootstrapSelection({
-    opts,
-    nonInteractive,
-    stateDir,
-    runtime,
-  });
+  // ── Eve integration keys ──
+  // Prompt for API keys needed by Eve's skills and write them to a .env file
+  // in the workspace directory so the agent can source them at runtime.
+  const steveEnvPath = path.join(workspaceDir, ".env");
+  if (!nonInteractive && !opts.json) {
+    runtime.log("");
+    runtime.log(theme.heading("Eve — Integration Setup"));
+    runtime.log(theme.muted("Configure the services Eve needs. Press Enter to skip any."));
+    runtime.log("");
+
+    const existingEnv = existsSync(steveEnvPath) ? readFileSync(steveEnvPath, "utf-8") : "";
+    const envLines: string[] = existingEnv ? existingEnv.split("\n").filter((l: string) => l.trim()) : [];
+
+    const readExisting = (key: string): string | undefined => {
+      const line = envLines.find((l: string) => l.startsWith(`${key}=`));
+      return line ? line.split("=").slice(1).join("=").replace(/^["']|["']$/g, "") : undefined;
+    };
+
+    const setEnv = (key: string, value: string) => {
+      const idx = envLines.findIndex((l: string) => l.startsWith(`${key}=`));
+      if (idx >= 0) {
+        envLines[idx] = `${key}=${value}`;
+      } else {
+        envLines.push(`${key}=${value}`);
+      }
+    };
+
+    // Eventbrite
+    const ebKey = await text({
+      message: stylePromptMessage("Eventbrite API Key (eventbrite.com/platform)"),
+      placeholder: "skip",
+      initialValue: readExisting("EVENTBRITE_API_KEY") ?? "",
+    });
+    if (!isCancel(ebKey) && typeof ebKey === "string" && ebKey.trim()) {
+      setEnv("EVENTBRITE_API_KEY", ebKey.trim());
+    }
+
+    const ebOrg = await text({
+      message: stylePromptMessage("Eventbrite Organization ID (optional)"),
+      placeholder: "skip",
+      initialValue: readExisting("EVENTBRITE_ORG_ID") ?? "",
+    });
+    if (!isCancel(ebOrg) && typeof ebOrg === "string" && ebOrg.trim()) {
+      setEnv("EVENTBRITE_ORG_ID", ebOrg.trim());
+    }
+
+    // Retell AI (voice calls)
+    const retellKey = await text({
+      message: stylePromptMessage("Retell AI API Key (app.retellai.com)"),
+      placeholder: "skip",
+      initialValue: readExisting("RETELL_API_KEY") ?? "",
+    });
+    if (!isCancel(retellKey) && typeof retellKey === "string" && retellKey.trim()) {
+      setEnv("RETELL_API_KEY", retellKey.trim());
+    }
+
+    const retellAgent = await text({
+      message: stylePromptMessage("Retell Agent ID (create agent in dashboard first)"),
+      placeholder: "skip",
+      initialValue: readExisting("RETELL_AGENT_ID") ?? "",
+    });
+    if (!isCancel(retellAgent) && typeof retellAgent === "string" && retellAgent.trim()) {
+      setEnv("RETELL_AGENT_ID", retellAgent.trim());
+    }
+
+    const retellNumber = await text({
+      message: stylePromptMessage("Retell Phone Number (e.g. +14157774444)"),
+      placeholder: "skip",
+      initialValue: readExisting("RETELL_FROM_NUMBER") ?? "",
+    });
+    if (!isCancel(retellNumber) && typeof retellNumber === "string" && retellNumber.trim()) {
+      setEnv("RETELL_FROM_NUMBER", retellNumber.trim());
+    }
+
+    // AgentMail (email)
+    const amKey = await text({
+      message: stylePromptMessage("AgentMail API Key (console.agentmail.to)"),
+      placeholder: "skip",
+      initialValue: readExisting("AGENTMAIL_API_KEY") ?? "",
+    });
+    if (!isCancel(amKey) && typeof amKey === "string" && amKey.trim()) {
+      setEnv("AGENTMAIL_API_KEY", amKey.trim());
+    }
+
+    const amInbox = await text({
+      message: stylePromptMessage("AgentMail Inbox ID (from create inbox response)"),
+      placeholder: "skip",
+      initialValue: readExisting("AGENTMAIL_INBOX_ID") ?? "",
+    });
+    if (!isCancel(amInbox) && typeof amInbox === "string" && amInbox.trim()) {
+      setEnv("AGENTMAIL_INBOX_ID", amInbox.trim());
+    }
+
+    const amEmail = await text({
+      message: stylePromptMessage("AgentMail email (e.g. eve@agentmail.to)"),
+      placeholder: "skip",
+      initialValue: readExisting("AGENTMAIL_EMAIL") ?? "",
+    });
+    if (!isCancel(amEmail) && typeof amEmail === "string" && amEmail.trim()) {
+      setEnv("AGENTMAIL_EMAIL", amEmail.trim());
+    }
+
+    mkdirSync(workspaceDir, { recursive: true });
+    writeFileSync(steveEnvPath, envLines.join("\n") + "\n", "utf-8");
+    runtime.log(theme.muted(`Integration keys saved to ${steveEnvPath}`));
+    runtime.log(theme.muted("You can update these later by editing the file or re-running bootstrap."));
+    runtime.log("");
+  }
+
+  const denchCloudSelection: { enabled: false } = { enabled: false };
 
   const packageRoot = resolveCliPackageRoot();
   const managedBundledPlugins: BundledPluginSpec[] = [
@@ -2323,7 +2427,6 @@ export async function bootstrapCommand(
       enabled: true,
       config: {
         gatewayUrl:
-          denchCloudSelection.gatewayUrl ||
           opts.denchGatewayUrl?.trim() ||
           process.env.DENCH_GATEWAY_URL?.trim() ||
           DEFAULT_DENCH_CLOUD_GATEWAY_URL,
@@ -2373,9 +2476,6 @@ export async function bootstrapCommand(
   if (nonInteractive) {
     onboardArgv.push("--non-interactive");
   }
-  if (denchCloudSelection.enabled) {
-    onboardArgv.push("--auth-choice", "skip");
-  }
 
   onboardArgv.push("--accept-risk", "--skip-ui");
   if (daemonless) {
@@ -2418,25 +2518,6 @@ export async function bootstrapCommand(
   await ensureGatewayPort(openclawCommand, profile, gatewayPort);
   postOnboardSpinner?.message("Setting tools profile…");
   await ensureToolsProfile(openclawCommand, profile);
-
-  if (
-    denchCloudSelection.enabled &&
-    denchCloudSelection.apiKey &&
-    denchCloudSelection.gatewayUrl &&
-    denchCloudSelection.selectedModel &&
-    denchCloudSelection.catalog
-  ) {
-    postOnboardSpinner?.message("Applying Dench Cloud model config…");
-    await applyDenchCloudBootstrapConfig({
-      openclawCommand,
-      profile,
-      stateDir,
-      gatewayUrl: denchCloudSelection.gatewayUrl,
-      apiKey: denchCloudSelection.apiKey,
-      catalog: denchCloudSelection.catalog,
-      selectedModel: denchCloudSelection.selectedModel,
-    });
-  }
 
   postOnboardSpinner?.message("Refreshing managed plugin config…");
   await syncBundledPlugins({
@@ -2615,7 +2696,7 @@ export async function bootstrapCommand(
     }
     logBootstrapChecklist(diagnostics, runtime);
     runtime.log("");
-    runtime.log(theme.heading("DenchClaw ready"));
+    runtime.log(theme.heading("Eve ready"));
     runtime.log(`Profile: ${profile}`);
     runtime.log(`OpenClaw CLI: ${installResult.version ?? "detected"}`);
     runtime.log(`Gateway: ${gatewayProbe.ok ? "reachable" : "check failed"}`);

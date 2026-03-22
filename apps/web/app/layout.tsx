@@ -6,9 +6,9 @@ import { PostHogProvider } from "./components/posthog-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "DenchClaw",
+  title: "Eve",
   description:
-    "AI Workspace with an agent that connects to your apps and does the work for you",
+    "DOAC community event agent — venue sourcing, comms, RSVPs, and coordination",
 };
 
 export const viewport: Viewport = {
