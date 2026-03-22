@@ -67,7 +67,7 @@ flowchart TD
     subgraph SKILLS["Skills · Pluggable Modules"]
         direction TB
         EVENTBRITE["Eventbrite\nEvent Management"]
-        RETELL["Retell AI\nVoice Calls"]
+        RETELL["Retell AI\nDual Voice Agents"]
         AGENTMAIL["AgentMail\nEmail Inbox"]
         ORCHESTRATION["Event\nOrchestration"]
         CRM["CRM / Database\nDuckDB"]
@@ -80,6 +80,7 @@ flowchart TD
     subgraph EXTENSIONS["Extensions · Platform Plugins"]
         AIGATEWAY["Dench AI Gateway\nModel Provider"]
         IDENTITY["Dench Identity\nAuthentication"]
+        POSTHOG["PostHog Analytics\nProduct Analytics"]
     end
 
     %% ── Core Services ──────────────────────────────────────
@@ -107,6 +108,7 @@ flowchart TD
         OAUTH[("OAuth Creds\ncredentials/")]
         LOGS[("Rolling Logs\n*.log")]
         MARKDOWN[("Knowledge Tree\nMarkdown Docs")]
+        CHATSESSIONS[("Chat Sessions\nJSONL Transcripts")]
     end
 
     %% ── Infrastructure ─────────────────────────────────────
@@ -115,6 +117,7 @@ flowchart TD
         NPM["npm Registry\neveevent"]
         LAUNCHD["macOS launchd\nDaemon"]
         DOCKER["Docker Support\nDaemonless Mode"]
+        INTEGRATION_TESTS["Integration Tests\ntest-integrations.sh"]
     end
 
     %% ── Relationships ──────────────────────────────────────
@@ -149,10 +152,15 @@ flowchart TD
     ORCHESTRATION --> EVENTBRITE
     ORCHESTRATION --> RETELL
     ORCHESTRATION --> AGENTMAIL
+    ORCHESTRATION --> BROWSER
     CRM --> DUCKDB
 
-    %% Extensions
+    %% Skills → Storage
+    RETELL -->|"transcripts"| CHATSESSIONS
+    AGENTMAIL -->|"email threads"| CHATSESSIONS
 
+    %% Extensions
+    TELEMETRY --> POSTHOG
 
     %% Core → Storage
     CONFIG --> JSONCONF
@@ -162,6 +170,59 @@ flowchart TD
     %% Infra/CI
     GHA -->|"publish"| NPM
     WEBRT -->|"register"| LAUNCHD
+    INTEGRATION_TESTS -->|"verify"| RETELL_API
+    INTEGRATION_TESTS -->|"verify"| AGENTMAIL_API
+    INTEGRATION_TESTS -->|"verify"| EVENTBRITE_API
+
+    %% ══════════════════════════════════════════════════════
+    %% Retell AI Agent Architectures
+    %% ══════════════════════════════════════════════════════
+
+    %% ── Discovery Agent ──────────────────────────────────
+    subgraph DISCOVERY_AGENT["Retell Discovery Agent · venue-discovery.json"]
+        direction LR
+        D_GREET["Greeting\n·static·\nIntroduce Eve\n& organization"]
+        D_AVAIL["Check\nAvailability\nDate, headcount,\nalternatives"]
+        D_PRICE["Pricing &\nDetails\nCost, minimums,\ninclusions"]
+        D_CATER["Catering &\nDeposit\nIn-house, outside,\ndeposit terms"]
+        D_LOGIS["Logistics\nPrivate/shared,\nsetup, access,\nparking"]
+        D_WRAP["Wrap Up\nGet contact info\nfor follow-up"]
+        D_NOAVAIL["No Availability\nAsk for referrals\nto similar venues"]
+        D_END["End Call"]
+
+        D_GREET -->|"venue responds"| D_AVAIL
+        D_AVAIL -->|"available or\nalternatives"| D_PRICE
+        D_AVAIL -->|"not available,\nno alternatives"| D_NOAVAIL
+        D_PRICE -->|"got pricing"| D_CATER
+        D_CATER -->|"got catering &\ndeposit info"| D_LOGIS
+        D_LOGIS -->|"got logistics"| D_WRAP
+        D_WRAP -->|"got contact"| D_END
+        D_NOAVAIL -->|"ending"| D_END
+    end
+
+    %% ── Booking Agent ────────────────────────────────────
+    subgraph BOOKING_AGENT["Retell Booking Agent · venue-booking.json"]
+        direction LR
+        B_GREET["Greeting\n·static·\nCall back to\nconfirm booking"]
+        B_CONFIRM["Confirm Date\n& Price\nVerify terms\nunchanged"]
+        B_DEPOSIT["Deposit &\nPayment\nRequest invoice,\nno card on phone"]
+        B_TIMING["Confirm\nTiming\nSetup, event hours,\nbooking ref"]
+        B_FINAL["Final\nWrap Up\nPaperwork,\ncancellation policy"]
+        B_CHANGED["Terms\nChanged\nEscalate to team,\ndo NOT commit"]
+        B_END["End Call"]
+
+        B_GREET -->|"venue responds"| B_CONFIRM
+        B_CONFIRM -->|"terms confirmed"| B_DEPOSIT
+        B_CONFIRM -->|"price or date\nchanged"| B_CHANGED
+        B_DEPOSIT -->|"payment info\nobtained"| B_TIMING
+        B_TIMING -->|"timing\nconfirmed"| B_FINAL
+        B_FINAL -->|"ready to end"| B_END
+        B_CHANGED -->|"ending"| B_END
+    end
+
+    %% ── Agent link to skill ──────────────────────────────
+    RETELL -->|"Discovery Agent\nvenue_name, event_date,\nheadcount, budget"| DISCOVERY_AGENT
+    RETELL -->|"Booking Agent\nagreed_price, setup_time,\nevent_start, event_end"| BOOKING_AGENT
 
     %% ── Styles ─────────────────────────────────────────────
     classDef cli fill:#4A90D9,stroke:#2C5F8A,color:#fff,rx:8
@@ -172,6 +233,7 @@ flowchart TD
     classDef external fill:#F39C12,stroke:#D68910,color:#fff,rx:8
     classDef storage fill:#27AE60,stroke:#1E8449,color:#fff,rx:8
     classDef infra fill:#95A5A6,stroke:#717D7E,color:#fff,rx:8
+    classDef agent fill:#E74C3C,stroke:#C0392B,color:#fff,rx:8
 
     class ENTRY,MAIN,RUNNER,CMDREG cli
     class BOOT,UPDATE,START,TELEM_CMD,DELEGATE cli
@@ -179,8 +241,10 @@ flowchart TD
     class CHAT_API,WORKSPACE_API,TERMINAL_API,SESSIONS_API,SKILLS_API,APPS_API,GATEWAY_API,MEMORIES_API web
     class CHATUI,EDITOR,TABLES,MONACOUI,CHARTS,DND web
     class EVENTBRITE,RETELL,AGENTMAIL,ORCHESTRATION,CRM,BROWSER,APPBUILDER,PRIVACY skill
-    class AIGATEWAY,IDENTITY ext
+    class AIGATEWAY,IDENTITY,POSTHOG ext
     class LOGGING,TELEMETRY,CONFIG,PROCESS,INFRA,TERMINAL_MOD core
     class EVENTBRITE_API,RETELL_API,AGENTMAIL_API,OPENCLAW external
-    class DUCKDB,JSONCONF,OAUTH,LOGS,MARKDOWN storage
-    class GHA,NPM,LAUNCHD,DOCKER infra
+    class DUCKDB,JSONCONF,OAUTH,LOGS,MARKDOWN,CHATSESSIONS storage
+    class GHA,NPM,LAUNCHD,DOCKER,INTEGRATION_TESTS infra
+    class D_GREET,D_AVAIL,D_PRICE,D_CATER,D_LOGIS,D_WRAP,D_NOAVAIL,D_END agent
+    class B_GREET,B_CONFIRM,B_DEPOSIT,B_TIMING,B_FINAL,B_CHANGED,B_END agent
